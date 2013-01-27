@@ -68,7 +68,7 @@
         _slider.center = CGPointMake(_sideOffset, self.bounds.size.height/2);
         [self addSubview:_slider];
         
-        [self sliderDraggedTo:(startValue * _bg.bounds.size.width + _sideOffset)];
+        [self dragSliderTo:(startValue * _bg.bounds.size.width + _sideOffset)];
         
         self.userInteractionEnabled = YES;
     }
@@ -95,7 +95,7 @@
         UITouch *touch = [touches anyObject];
         CGPoint point = [touch locationInView:self];
         
-        [self sliderDraggedTo:point.x];
+        [self dragSliderTo:point.x];
         [self calculateValue];
         
         if ([_delegate respondsToSelector:@selector(slider:valueChangedTo:)]) {
@@ -121,18 +121,19 @@
     }
 }
 
-#pragma mark -
+#pragma mark - UI helpers/ Value
 #pragma mark -
 
-- (void)drawPlayedPart {
-    _playedPart.frame = CGRectMake(_playedPart.frame.origin.x, _playedPart.frame.origin.y, _slider.center.x - _sideOffset, _playedPart.bounds.size.height);
-}
 
 - (void)calculateValue {
     _value = (_slider.center.x - _sideOffset)/(self.bounds.size.width - _sideOffset*2);
 }
 
-- (void)sliderDraggedTo:(double)x {
+- (void)drawPlayedPart {
+    _playedPart.frame = CGRectMake(_playedPart.frame.origin.x, _playedPart.frame.origin.y, _slider.center.x - _sideOffset, _playedPart.bounds.size.height);
+}
+
+- (void)dragSliderTo:(double)x {
     
     if (x < _sideOffset) {
         x = _sideOffset;
@@ -145,6 +146,7 @@
 }
 
 #pragma mark - Callbacks
+#pragma mark -
 
 - (void)buffer:(double)part {
     if (part > 1 || part < 0) return;
@@ -153,7 +155,7 @@
 
 - (void)slide:(double)part {
     if (part > 1 || part < 0) return;
-    [self sliderDraggedTo:_bg.bounds.size.width * part + _sideOffset];
+    [self dragSliderTo:_bg.bounds.size.width * part + _sideOffset];
 }
 
 @end
